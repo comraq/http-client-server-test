@@ -2,6 +2,7 @@
 
 namespace pillr\library\http;
 
+use InvalidArgumentException;
 
 use \Psr\Http\Message\RequestInterface  as  RequestInterface;
 use \Psr\Http\Message\UriInterface      as  UriInterface;
