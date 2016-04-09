@@ -1,6 +1,13 @@
 <?php
 
-require "../vendor/autoload.php";
+/*
+ * TODO: The below require statement does not work if the root directory
+ *       is not included in the include_path in php.ini
+ *
+ * require "../vendor/autoload.php";
+ */
+
+require __DIR__ . "/../vendor/autoload.php";
 
 use \pillr\library\http\Request  as HttpRequest;
 use \pillr\library\http\Response as HttpResponse;

@@ -28,7 +28,23 @@ use \pillr\library\http\Message         as  Message;
  */
 class Request extends Message implements RequestInterface
 {
+  private $protocol_version;
+  private $method;
+  private $uri;
+  private $headers;
+  private $body;
 
+  public function __construct($protocol_version,
+                              $method,
+                              $uri = null,
+                              $headers = [],
+                              $body = null) {
+    $this->protocol_version = $protocol_version;
+    $this->method = $method;
+    $this->uri = $uri;
+    $this->headers = $headers;
+    $this->body = $body;
+  }
 
     /**
      * Retrieves the message's request target.
@@ -48,7 +64,11 @@ class Request extends Message implements RequestInterface
      */
     public function getRequestTarget()
     {
-
+      // Returning the origin-form of the request target uri
+      if (!is_null($this->uri))
+        return $this->uri->__toString();
+      else
+        return "/";
     }
 
     /**
@@ -70,7 +90,14 @@ class Request extends Message implements RequestInterface
      */
     public function withRequestTarget($requestTarget)
     {
+      if (is_null($requestTarget))
+        throw new InvalidArgumentException ('Invalid Request Target!');
 
+      return new self($this->protocol_version,
+                      $this->method,
+                      new Uri($requestTarget),
+                      $this->headers,
+                      $this->body);
     }
 
     /**
@@ -80,7 +107,7 @@ class Request extends Message implements RequestInterface
      */
     public function getMethod()
     {
-
+      return strtoupper($this->method);
     }
 
     /**
@@ -114,7 +141,7 @@ class Request extends Message implements RequestInterface
      */
     public function getUri()
     {
-
+      return $this->uri;
     }
 
     /**

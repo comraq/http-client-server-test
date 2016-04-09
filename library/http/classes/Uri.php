@@ -2,6 +2,9 @@
 namespace pillr\library\http;
 
 use \Psr\Http\Message\UriInterface as UriInterface;
+
+use InvalidArgumentException;
+
 /**
  * Value object representing a URI.
  *
@@ -25,6 +28,42 @@ use \Psr\Http\Message\UriInterface as UriInterface;
 class Uri implements UriInterface
 {
     
+  private $uri_string = '';
+  private $scheme = '';
+  private $host = '';
+  private $port = null;
+  private $user = '';
+  private $pass = '';
+  private $path = '';
+  private $query = '';
+  private $fragment = '';
+
+
+  public function __construct($uri_string = '') {
+    $this->uri_string = $uri_string;
+
+    if (!empty($uri_string)) {
+      $uri_components = parse_url($uri_string);
+      if ($uri_components === false)
+        throw new InvalidArgumentException ('Invalid uri: ' . $uri_string);
+
+      $scheme = isset($uri_components['scheme'])?
+                  $uri_components['scheme'] : '';
+      $host = isset($uri_components['host'])?
+                $uri_components['host'] : '';
+      $port = isset($uri_components['port'])?
+                $uri_components['port'] : null;
+      $user = isset($uri_components['user'])?
+                $uri_components['user'] : '';
+      $pass = isset($uri_components['pass'])?
+                $uri_components['pass'] : '';
+      $path = isset($uri_components['path'])?
+                $uri_components['path'] : '';
+      $query = isset($uri_components['query'])?
+                $uri_components['query'] : '';
+    }
+  }
+
     /**
      * Retrieve the scheme component of the URI.
      *
@@ -41,7 +80,7 @@ class Uri implements UriInterface
      */
     public function getScheme()
     {
-
+      return strtolower($this->scheme);
     }
 
     /**
@@ -84,7 +123,7 @@ class Uri implements UriInterface
      */
     public function getUserInfo()
     {
-
+      return $this->user . (empty($this->pass)? '' : ":$this->pass");
     }
 
     /**
@@ -100,7 +139,7 @@ class Uri implements UriInterface
      */
     public function getHost()
     {
-
+      return strtolower($this->host);
     }
 
     /**
@@ -120,7 +159,7 @@ class Uri implements UriInterface
      */
     public function getPort()
     {
-
+      return $this->port;
     }
 
     /**
@@ -369,7 +408,7 @@ class Uri implements UriInterface
      */
     public function __toString()
     {
-        
+      return $this->uri_string;
     }
 
 }
