@@ -28,22 +28,18 @@ use \pillr\library\http\Message         as  Message;
  */
 class Request extends Message implements RequestInterface
 {
-  private $protocol_version;
   private $method;
   private $uri;
-  private $headers;
-  private $body;
 
   public function __construct($protocol_version,
                               $method,
                               $uri = null,
                               $headers = [],
                               $body = null) {
-    $this->protocol_version = $protocol_version;
+    parent::__construct($protocol_version, $headers, $body);
+
     $this->method = $method;
     $this->uri = $uri;
-    $this->headers = $headers;
-    $this->body = $body;
   }
 
     /**
@@ -93,11 +89,11 @@ class Request extends Message implements RequestInterface
       if (is_null($requestTarget))
         throw new InvalidArgumentException ('Invalid Request Target!');
 
-      return new self($this->protocol_version,
+      return new self($this->getProtocolVersion(),
                       $this->method,
                       new Uri($requestTarget),
-                      $this->headers,
-                      $this->body);
+                      $this->getHeaders(),
+                      $this->getBody());
     }
 
     /**
